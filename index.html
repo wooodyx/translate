@@ -140,7 +140,7 @@
       async function translate(text, targetLang) {
         try {
           // Fixed the source language from 'es' to 'en' since we're translating FROM English TO Spanish
-          const url = `https://translate.googleapis.com/translate_a/single?client=gtx&sl=en&tl=${targetLang}&dt=t&q=${encodeURIComponent(
+          const url = `https://translate.googleapis.com/translate_a/single?client=gtx&sl=es&tl=${targetLang}&dt=t&q=${encodeURIComponent(
             text
           )}`;
           const res = await fetch(url);
@@ -189,7 +189,7 @@
 
         if (containsBadWord(text)) return;
 
-        const spanishText = await translate(text, "es");
+        const spanishText = await translate(text, "en");
 
         if (containsBadWord(spanishText)) return;
         if (spanishText === lastSpanish) return;
