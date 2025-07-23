@@ -1,0 +1,36 @@
+{
+  "name": "mochi-translation-subtitles",
+  "version": "1.0.0",
+  "description": "Real-time English speech recognition and Spanish translation subtitles with chroma key support",
+  "main": "index.html",
+  "scripts": {
+    "dev": "vercel dev",
+    "build": "node build.js",
+    "validate": "node -e \"require('./build.js').validateHTML()\"",
+    "check-files": "node -e \"require('./build.js').checkRequiredFiles()\"",
+    "start": "vercel dev --listen 3000",
+    "deploy": "npm run build && vercel --prod",
+    "preview": "npm run build && vercel",
+    "serve": "vercel dev --listen 5000",
+    "test": "npm run validate && npm run check-files",
+    "clean": "node -e \"const fs = require('fs'); if(fs.existsSync('build-info.json')) fs.unlinkSync('build-info.json'); console.log('Clean completed');\""
+  },
+  "keywords": [
+    "speech-recognition",
+    "translation",
+    "subtitles",
+    "chroma-key",
+    "real-time",
+    "spanish",
+    "english",
+    "vercel"
+  ],
+  "author": "",
+  "license": "MIT",
+  "devDependencies": {
+    "vercel": "^33.0.0"
+  },
+  "engines": {
+    "node": ">=16.0.0"
+  }
+}
