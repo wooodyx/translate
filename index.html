@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="ko">
+<html lang="en">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -17,54 +17,72 @@
     <style>
       body {
         margin: 0;
-        background-color: #00ff00; /* 크로마키용 형광초록 배경 */
+        background-color: #00ff00; /* Chroma key green background */
         color: black;
         font-family: Arial, sans-serif;
         padding: 0;
         user-select: none;
+        overflow: hidden; /* Prevent scrollbars in OBS */
+        width: 100vw;
+        height: 100vh;
       }
       #status-indicator {
         position: fixed;
-        top: 0;
-        left: 0;
+        top: 10px;
+        left: 10px;
         font-size: 1.2em;
         color: black;
         text-align: center;
         z-index: 1000;
         padding: 5px 10px;
         border: 2px solid black;
-        background: transparent;
+        background: rgba(255, 255, 255, 0.8);
         cursor: pointer;
         min-width: 50px;
         display: flex;
         align-items: center;
         justify-content: center;
         height: 30px;
+        border-radius: 5px;
       }
       #status-indicator.off {
         color: transparent;
+        background: transparent;
       }
       #subtitle {
         position: fixed;
-        top: 50px;
-        left: 0;
-        text-align: left;
+        bottom: 80px; /* Position from bottom for better OBS integration */
+        left: 50%;
+        transform: translateX(-50%); /* Center horizontally */
+        text-align: center;
         white-space: normal;
         word-break: break-word;
         line-height: 1.4em;
-        max-width: 100vw;
+        max-width: 90vw;
         overflow: hidden;
         display: none;
-        width: 100vw;
         z-index: 999;
-        padding: 0 10px;
-        font-size: 2em;
-        color: black;
+        padding: 10px 20px;
+        font-size: 2.5em;
+        color: white;
+        text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8); /* Better readability */
+        background: rgba(0, 0, 0, 0.7);
+        border-radius: 10px;
       }
       #subtitle div {
         margin-bottom: 0.2em;
         opacity: 1;
         transition: opacity 0.6s ease;
+      }
+
+      /* OBS Browser Source optimizations */
+      * {
+        box-sizing: border-box;
+      }
+
+      /* Hide scrollbars */
+      ::-webkit-scrollbar {
+        display: none;
       }
     </style>
   </head>
@@ -74,7 +92,19 @@
       <div id="spanish"></div>
     </div>
 
-    <script>
+    <script type="module">
+      let sinceLang = "en"; // Source language (English)
+      let targetLang = "es"; // Target language (Spanish)
+
+      //Check querys sl and tl
+      const urlParams = new URLSearchParams(window.location.search);
+      if (urlParams.has("sl")) {
+        sinceLang = urlParams.get("sl");
+      }
+      if (urlParams.has("tl")) {
+        targetLang = urlParams.get("tl");
+      }
+
       // Check for SpeechRecognition API support
       const SpeechRecognition =
         window.SpeechRecognition || window.webkitSpeechRecognition;
@@ -100,7 +130,7 @@
       }
 
       const recognition = new SpeechRecognition();
-      recognition.lang = "en-US";
+      recognition.lang = "es-CO";
       recognition.interimResults = false;
       recognition.continuous = true;
 
@@ -137,10 +167,10 @@
         return badWords.some((word) => lower.includes(word));
       }
 
-      async function translate(text, targetLang) {
+      async function translate(text) {
         try {
           // Fixed the source language from 'es' to 'en' since we're translating FROM English TO Spanish
-          const url = `https://translate.googleapis.com/translate_a/single?client=gtx&sl=es&tl=${targetLang}&dt=t&q=${encodeURIComponent(
+          const url = `https://translate.googleapis.com/translate_a/single?client=gtx&sl=${sinceLang}&tl=${targetLang}&dt=t&q=${encodeURIComponent(
             text
           )}`;
           const res = await fetch(url);
@@ -185,11 +215,9 @@
 
         lastEnglishText = text;
 
-        console.log(text);
-
         if (containsBadWord(text)) return;
 
-        const spanishText = await translate(text, "en");
+        const spanishText = await translate(text);
 
         if (containsBadWord(spanishText)) return;
         if (spanishText === lastSpanish) return;
@@ -278,6 +306,32 @@
 
       statusIndicator.addEventListener("click", () => {
         toggleCaptions();
+      });
+
+      // OBS Browser Source optimizations
+      document.addEventListener("visibilitychange", () => {
+        if (document.hidden) {
+          // Page is hidden (OBS not showing this source)
+          recognition.stop();
+        } else {
+          // Page is visible again
+          if (captionsOn) {
+            setTimeout(() => recognition.start(), 500);
+          }
+        }
+      });
+
+      // Prevent context menu for cleaner OBS integration
+      document.addEventListener("contextmenu", (e) => e.preventDefault());
+
+      // Auto-hide cursor after 3 seconds of inactivity
+      let cursorTimeout;
+      document.addEventListener("mousemove", () => {
+        document.body.style.cursor = "default";
+        clearTimeout(cursorTimeout);
+        cursorTimeout = setTimeout(() => {
+          document.body.style.cursor = "none";
+        }, 3000);
       });
     </script>
   </body>

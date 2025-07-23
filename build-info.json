@@ -1,9 +1,9 @@
 {
-  "buildTime": "2025-07-23T21:28:52.778Z",
+  "buildTime": "2025-07-23T21:38:01.370Z",
   "version": "1.0.0",
   "name": "mochi-translation-subtitles",
   "files": {
-    "index.html": "8800 bytes",
+    "index.html": "10318 bytes",
     "vercel.json": "981 bytes"
   }
 }
