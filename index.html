@@ -14,12 +14,18 @@
       type="image/x-icon"
       href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🎤</text></svg>"
     />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Nunito:wght@300;400;600;700&display=swap"
+      rel="stylesheet"
+    />
     <style>
       body {
         margin: 0;
         background-color: #00ff00; /* Chroma key green background */
         color: black;
-        font-family: Arial, sans-serif;
+        font-family: "Nunito", Arial, sans-serif;
         padding: 0;
         user-select: none;
         overflow: hidden; /* Prevent scrollbars in OBS */
@@ -73,6 +79,7 @@
         margin-bottom: 0.2em;
         opacity: 1;
         transition: opacity 0.6s ease;
+        font-family: "Nunito", Arial, sans-serif;
       }
 
       /* OBS Browser Source optimizations */
@@ -93,8 +100,8 @@
     </div>
 
     <script type="module">
-      let sinceLang = "en"; // Source language (English)
-      let targetLang = "es"; // Target language (Spanish)
+      let sinceLang = "es";
+      let targetLang = "en";
 
       //Check querys sl and tl
       const urlParams = new URLSearchParams(window.location.search);
